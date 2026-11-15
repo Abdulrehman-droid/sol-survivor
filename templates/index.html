@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sol-Survivor: The AI Mission Director</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f0f4f8;
+            font-family: 'Courier New', Courier, monospace;
+            padding-top: 20px;
+        }
+        h1, h2, h3, h4 {
+            color: #ff4b4b !important;
+        }
+        .card {
+            background-color: #171d2e;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #323d5a;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            background-color: #f63366;
+        }
+        .gauge-container {
+            position: relative;
+            height: 120px;
+            background: #252e42;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ff4b4b;
+        }
+        .risk-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff4b4b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-4">
+            <h1>🔴 SOL-SURVIVOR: The AI Mission Director</h1>
+            <p class="lead">Target Audience: Junior Astronauts (Ages 7–12) | Powered by Flask & Vercel</p>
+        </div>
+
+        {% if not game_over and sol <= 7 %}
+        <div class="row">
+            <!-- Left Column: Lifelines -->
+            <div class="col-md-6">
+                <div class="card">
+                    <h3>📅 Sol: {{ sol }} / 7</h3>
+                    <p style="color: #a0aec0;">A Sol is one day on Mars! It is 39 minutes longer than an Earth day.</p>
+                </div>
+
+                <div class="card">
+                    <h4 class="mb-3">🛰️ Lifeline Indicators</h4>
+
+                    <label class="form-label">🔋 Power Grid: {{ power }}%</label>
+                    <div class="progress mb-3" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" style="width: {{ power }}%;"></div>
+                    </div>
+
+                    <label class="form-label">🌬️ Oxygen Reserves: {{ oxygen }}%</label>
+                    <div class="progress mb-3" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" style="width: {{ oxygen }}%;"></div>
+                    </div>
+
+                    <label class="form-label">💚 Crew Health Status: {{ health }}%</label>
+                    <div class="progress mb-3" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" style="width: {{ health }}%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Space Weather & AI -->
+            <div class="col-md-6">
+                <div class="card">
+                    <h4>☀️ Solar Flare Warning System</h4>
+                    <p><strong>Sensor Reading:</strong> Detected Solar Flare Class: <span class="text-danger">{{ flare.class_type }}</span></p>
+                    <p><strong>NASA DONKI Severity Score:</strong> {{ flare.severity_score }}</p>
+
+                    <div class="gauge-container text-center flex-column">
+                        <div class="risk-text">{{ risk_proba }}%</div>
+                        <small class="text-muted">AI Radiation Storm Risk Prediction</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission Decision Directive Card -->
+        <div class="card">
+            <h3>🎯 Sol {{ sol }} Mission Directive</h3>
+            {% if is_storm_alert %}
+                <div class="alert alert-danger">⚠️ RADIATION ALERT: AI predicts high likelihood of an incoming Coronal Mass Ejection!</div>
+                <form action="/action" method="post">
+                    <input type="hidden" name="risk_proba" value="{{ risk_proba }}">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="choice" id="choiceA" value="A" checked>
+                        <label class="form-check-label" for="choiceA"><strong>Option A:</strong> Activate electromagnetic storm shields (Uses 25% Power, Protects Health)</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="choice" id="choiceB" value="B">
+                        <label class="form-check-label" for="choiceB"><strong>Option B:</strong> Evacuate to deep subterranean tunnels (Uses 25% Oxygen, Safety Assured)</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="choice" id="choiceC" value="C">
+                        <label class="form-check-label" for="choiceC"><strong>Option C:</strong> Attempt to override with backup solar cell arrays (Risk Health for 15% Power bonus)</label>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">Lock Choice & Execute Step 🚀</button>
+                </form>
+            {% else %}
+                <div class="alert alert-success">✅ Calm space weather forecasted for this Sol.</div>
+                <form action="/action" method="post">
+                    <input type="hidden" name="risk_proba" value="{{ risk_proba }}">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="choice" id="choiceA" value="A" checked>
+                        <label class="form-check-label" for="choiceA"><strong>Option A:</strong> Perform science experiment (Uses 10% Power, +15% Health due to optimism)</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="choice" id="choiceB" value="B">
+                        <label class="form-check-label" for="choiceB"><strong>Option B:</strong> Run oxygen recycling maintenance (Uses 15% Power, +15% Oxygen boost)</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="choice" id="choiceC" value="C">
+                        <label class="form-check-label" for="choiceC"><strong>Option C:</strong> Conserve all resources (+5% Power, +5% Oxygen, +5% Health)</label>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Lock Choice & Execute Step 🚀</button>
+                </form>
+            {% endif %}
+        </div>
+
+        {% else %}
+        <!-- End Game -->
+        <div class="card text-center">
+            {% if power > 0 and oxygen > 0 and health > 0 %}
+                <h2 class="text-success">🎉 MISSION SURVIVED! YOU CONQUERED THE RED PLANET!</h2>
+                <p>Congratulations, Junior Astronaut! All 7 Sols completed with active base operations.</p>
+            {% else %}
+                <h2 class="text-danger">💀 MISSION CRITICAL FAILURE: Your colony ran out of essential lifelines!</h2>
+                <p>Keep practicing to become the supreme Space Commander! Space is challenging.</p>
+            {% endif %}
+
+            <!-- Badge Resolution -->
+            <div class="alert alert-info my-4">
+                <h4>Your Official NASA Space Badge:</h4>
+                {% set max_val = [persona_scores.Engineer, persona_scores.Biologist, persona_scores.Commander] | max %}
+                {% if max_val == persona_scores.Engineer %}
+                    <strong>🔧 The Life-Support Guardian:</strong> You prioritized maintaining power grids, repairing critical components, and protecting electronics!
+                {% elif max_val == persona_scores.Biologist %}
+                    <strong>🔬 The Astrobiology Champion:</strong> You focused heavily on organic life, discovery, research experiments, and health safety!
+                {% else %}
+                    <strong>🛡️ The Calculated Risk-Taker:</strong> You maintained balance, prioritized tactical team maneuvers, and safely organized operations!
+                {% endif %}
+            </div>
+
+            <h4>📜 Mission Logs</h4>
+            <ul class="list-group bg-dark text-start text-white mb-4" style="max-height: 250px; overflow-y: auto;">
+                {% for log in game_log %}
+                    <li class="list-group-item bg-dark text-white border-secondary">- {{ log }}</li>
+                {% endfor %}
+            </ul>
+
+            <a href="/restart" class="btn btn-primary btn-lg w-100">Launch Next Simulation 🛰️</a>
+        </div>
+        {% endif %}
+
+        <!-- NASA Science Footer -->
+        <div class="card">
+            <h5>📚 NASA Data Sources, Science & Attribution</h5>
+            <ul>
+                <li><strong>NASA DONKI:</strong> Space Weather analysis.</li>
+                <li><strong>NASA OSDR:</strong> Radiation effects study.</li>
+                <li><strong>Sol:</strong> A Martian solar day (24h 39m).</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
